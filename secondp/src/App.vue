@@ -1,32 +1,155 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+    <div :class="[$style.wrapper]">
+      <header>
+        <div :class="[$style.header]">My personal costs</div>
+      </header>
+      <main>
+        <button :class="[$style.newcost_btn]" @click="show = !show">
+          ADD NEW COST +
+        </button>
+        <add-payment-form v-if="show" @addNewPayment="addDataToPaymentList" />
+        <table>
+          <payments-display :items="paymentList" :pageNum="page" />
+        </table>
+        <pagination
+          :length="paymentListLength"
+          @chosedPage="renderPaymentList"
+        />
+      </main>
     </div>
-    <router-view/>
   </div>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+<script>
+import AddPaymentForm from "./components/AddPaymentForm.vue";
+import Pagination from "./components/Pagination.vue";
+import PaymentsDisplay from "./components/PaymentsDisplay.vue";
+
+export default {
+  name: "App",
+  components: {
+    PaymentsDisplay,
+    AddPaymentForm,
+    Pagination,
+  },
+  data() {
+    return {
+      paymentList: [],
+      paymentListLength: 0,
+      show: false,
+      page: 1,
+    };
+  },
+  methods: {
+    fetchData() {
+      return [
+        {
+          id: 1,
+          date: "01.3.2020",
+          category: "Food",
+          value: 169,
+        },
+        {
+          id: 2,
+          date: "02.3.2020",
+          category: "Transport",
+          value: 360,
+        },
+        {
+          id: 3,
+          date: "03.3.2020",
+          category: "Food",
+          value: 169,
+        },
+        {
+          id: 4,
+          date: "04.3.2020",
+          category: "Transport",
+          value: 360,
+        },
+        {
+          id: 5,
+          date: "05.3.2020",
+          category: "Food",
+          value: 169,
+        },
+        {
+          id: 6,
+          date: "06.3.2020",
+          category: "Transport",
+          value: 360,
+        },
+        {
+          id: 7,
+          date: "07.3.2020",
+          category: "Food",
+          value: 169,
+        },
+        {
+          id: 8,
+          date: "08.3.2020",
+          category: "Transport",
+          value: 360,
+        },
+        {
+          id: 9,
+          date: "09.3.2020",
+          category: "Transport",
+          value: 360,
+        },
+        {
+          id: 10,
+          date: "10.3.2020",
+          category: "Food",
+          value: 169,
+        },
+        {
+          id: 11,
+          date: "11.3.2020",
+          category: "Transport",
+          value: 360,
+        },
+      ];
+    },
+    addDataToPaymentList(item) {
+      item.id = this.paymentList.length + 1;
+      this.paymentList.push(item);
+    },
+    getLengthPaymentList() {
+      return this.paymentList.length;
+    },
+    renderPaymentList(num) {
+      this.page = num;
+    },
+  },
+  created() {
+    this.paymentList = this.fetchData();
+  },
+  mounted() {
+    this.paymentListLength = this.getLengthPaymentList();
+  },
+  updated() {
+    this.paymentListLength = this.getLengthPaymentList();
+  },
+};
+</script>
+
+<style lang="scss" module>
+body {
+  font-family: sans-serif;
 }
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+.header {
+  font-size: 30px;
+  text-align: center;
+}
+.newcost_btn {
+  cursor: pointer;
+  margin-left: 1%;
+  margin-bottom: 4%;
+  padding: 15px 10px;
+  background-color: rgb(7, 145, 145);
+  color: white;
+  border: transparent;
 }
 </style>
