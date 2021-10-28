@@ -4,12 +4,19 @@
     <input placeholder="Payment amount" v-model="value" />
     <input placeholder="Payment date" v-model="date" />
     <select-category v-model="category" />
+    <div class="new_category">
+      <input placeholder="New Category" v-model="new_category" />
+      <button class="newcat_btn" @click="addToCategoryList()">
+        add new Category +
+      </button>
+    </div>
     <button class="save_btn" @click="onSave">ADD +</button>
   </div>
 </template>
 
 <script>
 import SelectCategory from "./SelectCategory.vue";
+import { mapMutations } from "vuex";
 
 export default {
   components: { SelectCategory },
@@ -19,6 +26,7 @@ export default {
       category: "",
       value: "",
       date: "",
+      new_category: "",
     };
   },
   computed: {
@@ -31,6 +39,12 @@ export default {
     },
   },
   methods: {
+    ...mapMutations({
+      addCategory: "addNewCategory",
+    }),
+    addToCategoryList() {
+      this.addCategory(this.new_category);
+    },
     onSave() {
       const data = {
         id: 0,
@@ -63,6 +77,19 @@ export default {
     background-color: rgb(7, 145, 145);
     color: white;
     border: transparent;
+  }
+  .new_category {
+    display: flex;
+    & button {
+      cursor: pointer;
+      margin-left: 0px;
+      width: 100%;
+      height: 40px;
+      padding: 5px 5px;
+      background-color: rgb(7, 145, 145);
+      color: white;
+      border: transparent;
+    }
   }
 }
 </style>

@@ -131,6 +131,7 @@ export default {
       item.id = this.paymentList.length + 1;
       this.addData(item);
     },
+
     getLengthPaymentList() {
       return this.paymentList.length;
     },

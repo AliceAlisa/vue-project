@@ -17,7 +17,10 @@ export default new Vuex.Store({
     },
     setCategoryList(state, payload) {
       state.categoryList = payload
-    }
+    },
+    addNewCategory(state, payload) {
+      state.categoryList.push(payload)
+    },
   },
   actions: {
     fetchData({ dispatch }) {
