@@ -3,6 +3,7 @@
     <div :class="[$style.wrapper]">
       <header>
         <div :class="[$style.header]">My personal costs</div>
+        <h3>Total Value: {{ getFPV }}</h3>
       </header>
       <main>
         <button :class="[$style.newcost_btn]" @click="show = !show">
@@ -25,6 +26,7 @@
 import AddPaymentForm from "./components/AddPaymentForm.vue";
 import Pagination from "./components/Pagination.vue";
 import PaymentsDisplay from "./components/PaymentsDisplay.vue";
+import { mapMutations, mapGetters } from "vuex";
 
 export default {
   name: "App",
@@ -35,14 +37,27 @@ export default {
   },
   data() {
     return {
-      paymentList: [],
+      //paymentList: [],
       paymentListLength: 0,
       show: false,
       page: 1,
     };
   },
+  computed: {
+    ...mapGetters({
+      paymentList: "getPaymentList",
+      category: "getCategoryList",
+    }),
+    getFPV() {
+      return this.$store.getters.getFullPaymentValue;
+    },
+  },
   methods: {
-    fetchData() {
+    ...mapMutations({
+      myMutationName: "setPaymentListData",
+      addData: "addPaymentListData",
+    }),
+    /*fetchData() {
       return [
         {
           id: 1,
@@ -111,10 +126,10 @@ export default {
           value: 360,
         },
       ];
-    },
+    },*/
     addDataToPaymentList(item) {
       item.id = this.paymentList.length + 1;
-      this.paymentList.push(item);
+      this.addData(item);
     },
     getLengthPaymentList() {
       return this.paymentList.length;
@@ -124,7 +139,10 @@ export default {
     },
   },
   created() {
-    this.paymentList = this.fetchData();
+    this.$store.dispatch("fetchData");
+    //this.myMutationName(this.fetchData());
+    //this.$store.commit("setPaymentListData", this.fetchData());
+    //this.paymentList = this.fetchData();
   },
   mounted() {
     this.paymentListLength = this.getLengthPaymentList();

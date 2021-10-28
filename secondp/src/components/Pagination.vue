@@ -1,7 +1,13 @@
 <template>
   <div class="pag">
     <button @click="prevPage" :disabled="page == 1">&lt;</button>
-    <button v-for="(n, ind) in countPages" :key="ind" @click="chosedPage(n)">
+    <button
+      class="pages"
+      :class="{ active: page === n }"
+      v-for="(n, ind) in countPages"
+      :key="ind"
+      @click="chosedPage(n)"
+    >
       {{ n }}
     </button>
     <button @click="nextPage" :disabled="page == countPages">&gt;</button>
@@ -45,6 +51,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.active {
+  color: darkcyan;
+}
 .pag {
   text-align: center;
   padding: 10px;

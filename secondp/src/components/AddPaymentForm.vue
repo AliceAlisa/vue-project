@@ -1,20 +1,23 @@
 <template>
   <div class="form">
-    <input placeholder="Payment description" v-model="category" />
+    <!--<input placeholder="Payment description" v-model="category" />-->
     <input placeholder="Payment amount" v-model="value" />
     <input placeholder="Payment date" v-model="date" />
+    <select-category v-model="category" />
     <button class="save_btn" @click="onSave">ADD +</button>
   </div>
 </template>
 
 <script>
+import SelectCategory from "./SelectCategory.vue";
+
 export default {
+  components: { SelectCategory },
   name: "AddPaymentForm",
   data() {
     return {
       category: "",
       value: "",
-
       date: "",
     };
   },
@@ -32,7 +35,7 @@ export default {
       const data = {
         id: 0,
         category: this.category,
-        value: this.value,
+        value: Number(this.value),
         date: this.date || this.getCurrentDate,
       };
       this.$emit("addNewPayment", data);

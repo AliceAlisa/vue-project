@@ -31,13 +31,17 @@ export default {
   },
   computed: {
     filteredItems() {
-      const filteredItems = [];
+      return this.items.slice(
+        5 * (this.pageNum - 1),
+        5 * (this.pageNum - 1) + 5
+      );
+      /*const filteredItems = [];
       this.items.forEach((element, n) => {
         if (n >= 5 * (this.pageNum - 1) && n < 5 * this.pageNum) {
           filteredItems.push(element);
         }
       });
-      return filteredItems;
+      return filteredItems;*/
     },
   },
 };
