@@ -23,7 +23,7 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    fetchData({ dispatch }) {
+    /*fetchData({ dispatch }) {
       return new Promise((resolve) => {
         setTimeout(() => {
           resolve(
@@ -99,7 +99,7 @@ export default new Vuex.Store({
       }).then(res => {
         dispatch('upgradeData', res)
       });
-    },
+    },*/
     fetchCategoryList({ commit }) {
       return new Promise((resolve) => {
         setTimeout(() => {
@@ -110,10 +110,83 @@ export default new Vuex.Store({
         commit('setCategoryList', res)
       });
     },
-    upgradeData({ commit }, payload) {
+
+    fetchData({ commit }) {
+      commit('setPaymentListData', [
+        {
+          id: 1,
+          date: "01.3.2020",
+          category: "Food",
+          value: 169,
+        },
+        {
+          id: 2,
+          date: "02.3.2020",
+          category: "Transport",
+          value: 360,
+        },
+        {
+          id: 3,
+          date: "03.3.2020",
+          category: "Food",
+          value: 169,
+        },
+        {
+          id: 4,
+          date: "04.3.2020",
+          category: "Transport",
+          value: 360,
+        },
+        {
+          id: 5,
+          date: "05.3.2020",
+          category: "Food",
+          value: 169,
+        },
+        {
+          id: 6,
+          date: "06.3.2020",
+          category: "Transport",
+          value: 360,
+        },
+        {
+          id: 7,
+          date: "07.3.2020",
+          category: "Food",
+          value: 169,
+        },
+        {
+          id: 8,
+          date: "08.3.2020",
+          category: "Transport",
+          value: 360,
+        },
+        {
+          id: 9,
+          date: "09.3.2020",
+          category: "Transport",
+          value: 360,
+        },
+        {
+          id: 10,
+          date: "10.3.2020",
+          category: "Food",
+          value: 169,
+        },
+        {
+          id: 11,
+          date: "11.3.2020",
+          category: "Transport",
+          value: 360,
+        },
+      ])
+    },
+    /*upgradeData({ commit }, payload) {
       // dispatch('fetchCategoryList')
       commit('setPaymentListData', payload)
-    }
+      //console.log(state.paymentList)
+      debugger
+    }*/
   },
   getters: {
     getPaymentList: state => state.paymentList,

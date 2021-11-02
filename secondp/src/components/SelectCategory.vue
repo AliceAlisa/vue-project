@@ -1,7 +1,11 @@
 <template>
   <div>
-    <select :value="value" @change="onChange($event)">
-      <option v-for="(option, idx) in getCategoryList" :key="idx">
+    <select @change="onChange($event)">
+      <option
+        :selected="$route.params.category === option"
+        v-for="(option, idx) in getCategoryList"
+        :key="idx"
+      >
         {{ option }}
       </option>
     </select>
@@ -20,7 +24,7 @@ export default {
   },
   data() {
     return {
-      selected: "",
+      selectedItem: "",
     };
   },
   computed: {

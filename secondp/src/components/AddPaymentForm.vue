@@ -55,6 +55,10 @@ export default {
       this.$emit("addNewPayment", data);
     },
   },
+  mounted() {
+    this.category = this.$route.params.category;
+    this.value = this.$route.query.value;
+  },
 };
 </script>
 
