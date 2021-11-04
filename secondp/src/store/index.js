@@ -21,6 +21,10 @@ export default new Vuex.Store({
     addNewCategory(state, payload) {
       state.categoryList.push(payload)
     },
+    deleteData(state, payload) {
+      const itemIndex = state.paymentList.findIndex((obj => obj.id == payload))
+      state.paymentList.splice(itemIndex, 1)
+    },
   },
   actions: {
     /*fetchData({ dispatch }) {
@@ -181,6 +185,13 @@ export default new Vuex.Store({
         },
       ])
     },
+    upgradeData({ commit }, payload) {
+      const itemIndex = this.state.paymentList.findIndex((obj => obj.id == payload.id))
+      this.state.paymentList[itemIndex].category = payload.category
+      this.state.paymentList[itemIndex].value = payload.value
+      commit('setPaymentListData', this.state.paymentList)
+    },
+
     /*upgradeData({ commit }, payload) {
       // dispatch('fetchCategoryList')
       commit('setPaymentListData', payload)

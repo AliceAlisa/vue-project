@@ -52,7 +52,7 @@ export default {
       addData: "addPaymentListData",
     }),
     addDataToPaymentList(item) {
-      item.id = this.paymentList.length + 1;
+      item.id = this.paymentList[this.paymentList.length - 1].id + 1;
       this.addData(item);
     },
 

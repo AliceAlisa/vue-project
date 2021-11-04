@@ -1,6 +1,5 @@
 <template>
   <div class="form">
-    <!--<input placeholder="Payment description" v-model="category" />-->
     <input placeholder="Payment amount" v-model="value" />
     <input placeholder="Payment date" v-model="date" />
     <select-category v-model="category" />
@@ -21,6 +20,9 @@ import { mapMutations } from "vuex";
 export default {
   components: { SelectCategory },
   name: "AddPaymentForm",
+  props: {
+    contextIdElem: Number,
+  },
   data() {
     return {
       category: "",
@@ -46,18 +48,32 @@ export default {
       this.addCategory(this.new_category);
     },
     onSave() {
-      const data = {
-        id: 0,
-        category: this.category,
-        value: Number(this.value),
-        date: this.date || this.getCurrentDate,
-      };
-      this.$emit("addNewPayment", data);
+      if (this.contextIdElem) {
+        const data = {
+          id: this.contextIdElem,
+          category: this.category,
+          value: Number(this.value),
+        };
+        this.$store.dispatch("upgradeData", data);
+        this.$modal.close();
+      } else {
+        const data = {
+          id: 0,
+          category: this.category,
+          value: Number(this.value),
+          date: this.date || this.getCurrentDate,
+        };
+        this.$emit("addNewPayment", data);
+      }
     },
   },
   mounted() {
-    this.category = this.$route.params.category;
-    this.value = this.$route.query.value;
+    if (this.$route.params.category) {
+      this.category = this.$route.params.category;
+    }
+    if (this.$route.query.value) {
+      this.value = this.$route.query.value;
+    }
   },
 };
 </script>
