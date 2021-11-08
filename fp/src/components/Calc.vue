@@ -1,13 +1,18 @@
 <template>
-  <div class="home">
-    <calc />
-    <!--  <input v-model.number="operand1" type="number" />
-    <input v-model.number="operand2" @keyup="checkNull" type="number" />
+  <div class="calc">
+    <input v-model.number="operand1" type="number" name="operand1" />
+    <input
+      v-model.number="operand2"
+      @keyup="checkNull"
+      type="number"
+      name="operand2"
+    />
     = {{ result }}
     <br />
     <br />
     <button
       v-for="(operand, idx) in operands"
+      :name="operand"
       :key="idx"
       :disabled="(operand === '/' || operand === 'int /') && isDisabled"
       @click="calculate(operand)"
@@ -22,34 +27,38 @@
       <button
         v-for="keyItem in keyboard"
         :key="keyItem"
+        :name="keyItem"
         @click="keyboardClick(keyItem)"
       >
         {{ keyItem }}
       </button>
       <br />
-      <input type="radio" id="one" value="operand1" v-model="picked" />
+      <input
+        type="radio"
+        id="one"
+        value="operand1"
+        v-model="picked"
+        name="radioOperand1"
+      />
       <label for="one">Операнд 1</label>
       <br />
-      <input type="radio" id="two" value="operand2" v-model="picked" />
+      <input
+        type="radio"
+        id="two"
+        value="operand2"
+        v-model="picked"
+        name="radioOperand2"
+      />
       <label for="two">Операнд 2</label>
       <p class="error" v-show="!picked">{{ error }}</p>
       <br />
-    </div>-->
+    </div>
   </div>
 </template>
 
 <script>
-import Calc from "../components/Calc.vue";
-// @ is an alias to /src
-//import HelloWorld from "@/components/HelloWorld.vue";
-
 export default {
-  name: "Home",
-  components: {
-    Calc,
-    //HelloWorld,
-  },
-  /*
+  name: "Calc",
   data() {
     return {
       operand1: [].join(""),
@@ -117,11 +126,6 @@ export default {
         (this.operand1 - (this.operand1 % this.operand2)) / this.operand2;
     },
 
-    clearInput() {
-      this.operand1 = [].join("");
-      this.operand2 = [].join("");
-    },
-
     keyboardClick(item) {
       if (typeof item == "number") {
         if (this.picked == "operand1") {
@@ -150,12 +154,12 @@ export default {
         return;
       }
     },
-  },*/
+  },
 };
 </script>
 
 <style scoped lang="scss">
-/*.error {
+.error {
   color: red;
-}*/
+}
 </style>
