@@ -1,46 +1,50 @@
 <template>
-  <div :class="[$style.wrapper]">
-    <header>
-      <div :class="[$style.header]">My personal costs</div>
-      <h3>Total Value: {{ getFPV }}</h3>
-    </header>
-    <main>
-      <button :class="[$style.newcost_btn]" @click="show = !show">
-        ADD NEW COST +
-      </button>
-      <add-payment-form v-if="show" @addNewPayment="addDataToPaymentList" />
-      <table>
-        <payments-display :items="paymentList" :pageNum="page" />
-      </table>
-      <pagination :length="paymentListLength" @chosedPage="renderPaymentList" />
-    </main>
-  </div>
+  <v-container>
+    <v-row>
+      <v-col>
+        <div class="text-h5 text-sm-h3 pb-2">My Personal Cost</div>
+        <v-dialog v-model="dialog" width="500">
+          <template #activator="{ on }">
+            <v-btn color="teal" dark v-on="on">
+              ADD NEW COST<v-icon>mdi-plus</v-icon></v-btn
+            >
+          </template>
+          <add-payment-form @addNewPayment="addDataToPaymentList" />
+        </v-dialog>
+        <payments-display :items="paymentList" />
+      </v-col>
+      <v-col>
+        <chart-doughnut :items="paymentList" :fullPaymentValue="fullPayment" />
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
-import AddPaymentForm from "../components/AddPaymentForm.vue";
-import Pagination from "../components/Pagination.vue";
 import PaymentsDisplay from "../components/PaymentsDisplay.vue";
 import { mapMutations, mapGetters } from "vuex";
+import AddPaymentForm from "../components/AddPaymentForm.vue";
+import ChartDoughnut from "../components/ChartDoughnut.vue";
 
 export default {
   name: "Costs",
   components: {
     PaymentsDisplay,
+    ChartDoughnut,
     AddPaymentForm,
-    Pagination,
   },
   data() {
     return {
       paymentListLength: 0,
       show: false,
-      page: 1,
+      dialog: false,
     };
   },
   computed: {
     ...mapGetters({
       paymentList: "getPaymentList",
       category: "getCategoryList",
+      fullPayment: "getFullPaymentValue",
     }),
     getFPV() {
       return this.$store.getters.getFullPaymentValue;
@@ -54,6 +58,7 @@ export default {
     addDataToPaymentList(item) {
       item.id = this.paymentList[this.paymentList.length - 1].id + 1;
       this.addData(item);
+      this.dialog = false;
     },
 
     getLengthPaymentList() {
@@ -94,20 +99,4 @@ export default {
 </script>
 
 <style lang="scss" module>
-body {
-  font-family: sans-serif;
-}
-.header {
-  font-size: 30px;
-  text-align: center;
-}
-.newcost_btn {
-  cursor: pointer;
-  margin-left: 1%;
-  margin-bottom: 4%;
-  padding: 15px 10px;
-  background-color: rgb(7, 145, 145);
-  color: white;
-  border: transparent;
-}
 </style>

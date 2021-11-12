@@ -1,123 +1,136 @@
 <template>
-  <div class="wrapper">
-    <table>
-      <tr>
-        <th>#</th>
-        <th>Category</th>
-        <th>Amount</th>
-        <th>Date</th>
-      </tr>
-      <tr v-for="(item, idx) in filteredItems" :key="idx">
-        <td class="table">{{ item.id }}</td>
-        <td class="table">{{ item.category }}</td>
-        <td class="table">{{ item.value }}</td>
-        <td class="table">{{ item.date }}</td>
-        <td :id="item.id" class="menu" @click="openContextMenu($event)">...</td>
-      </tr>
-    </table>
-    <div class="context" v-if="opendMenu">
-      <transition name="fade">
-        <context-menu
-          id="cont_menu"
-          :style="{ top: contextMenuTop, left: contextMenuLeft }"
-          :settings="modalSettings"
-          :idElem="contextId"
-          @closeMenu="opendMenu = false"
-        />
-      </transition>
-    </div>
-  </div>
+  <v-data-table
+    :headers="headers"
+    :items="items"
+    :items-per-page="5"
+    class="elevation-1"
+  >
+    <template v-slot:top>
+      <v-toolbar flat>
+        <v-dialog v-model="dialog" max-width="500px">
+          <v-card>
+            <v-row>
+              <v-col :cols="9">
+                <v-card-title>
+                  <span class="text-h5">Edit Element</span>
+                </v-card-title>
+              </v-col>
+              <v-col :cols="3">
+                <v-card-actions>
+                  <v-btn
+                    class="mt-2 ml-32"
+                    color="blue darken-1"
+                    text
+                    @click="close"
+                  >
+                    <v-icon>mdi-close-thick</v-icon>
+                  </v-btn>
+                </v-card-actions>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-card-text>
+                <add-payment-form
+                  :editedElem="editedItem"
+                  @closeAddPayment="close"
+                />
+              </v-card-text>
+            </v-row>
+          </v-card>
+        </v-dialog>
+        <v-dialog v-model="dialogDelete" max-width="500px">
+          <v-card>
+            <v-card-title class="text-h5"
+              >Are you sure you want to delete this item?</v-card-title
+            >
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="closeDelete"
+                >Cancel</v-btn
+              >
+              <v-btn color="blue darken-1" text @click="deleteItemConfirm"
+                >OK</v-btn
+              >
+              <v-spacer></v-spacer>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-toolbar>
+    </template>
+    <template v-slot:[`item.actions`]="{ item }">
+      <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
+      <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
+    </template>
+  </v-data-table>
 </template>
 
 <script>
-import ContextMenu from "./ContextMenu.vue";
+import AddPaymentForm from "./AddPaymentForm.vue";
 export default {
-  components: { ContextMenu },
+  components: { AddPaymentForm },
   name: "PaymentsDisplay",
-  data() {
-    return {
-      opendMenu: false,
-      modalSettings: {},
-      contextId: 0,
-      contextMenuTop: "",
-      contextMenuLeft: "",
-    };
-  },
   props: {
     items: {
       type: Array,
       default: () => [],
     },
-    pageNum: {
-      type: Number,
-    },
   },
+  data() {
+    return {
+      headers: [
+        {
+          text: "#",
+          align: "start",
+          sortable: false,
+          value: "id",
+        },
+        { text: "Date", value: "date" },
+        { text: "Category", value: "category" },
+        { text: "Value", value: "value" },
+        { text: "Actions", value: "actions", sortable: false },
+      ],
+      opendMenu: false,
+      dialog: false,
+      dialogDelete: false,
+      editedIndex: -1,
+      editedItem: {},
+      defaultItem: {
+        id: 0,
+        date: "",
+        category: "",
+        value: 0,
+      },
+    };
+  },
+
   methods: {
-    openContextMenu(event) {
-      this.opendMenu = !this.opendMenu;
-
-      this.contextMenuLeft = event.target.getBoundingClientRect().left + "px";
-      this.contextMenuTop = event.target.getBoundingClientRect().top + "px";
-
-      this.contextId = Number(event.target.id);
+    editItem(item) {
+      this.editedItem = Object.assign({}, item);
+      this.dialog = true;
     },
 
-    onOpend(settings) {
-      this.modalSettings = settings.settings;
+    deleteItem(item) {
+      this.editedIndex = item.id;
+      this.dialogDelete = true;
     },
 
-    onClosed() {
-      this.modalSettings = {};
+    deleteItemConfirm() {
+      this.$store.commit("deleteData", this.editedIndex);
+      this.closeDelete();
     },
-  },
-  computed: {
-    filteredItems() {
-      return this.items.slice(
-        5 * (this.pageNum - 1),
-        5 * (this.pageNum - 1) + 5
-      );
+    close() {
+      this.dialog = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
     },
-  },
-  mounted() {
-    this.$modal.EventBus.$on("opend", this.onOpend);
-    this.$modal.EventBus.$on("closed", this.onClosed);
+    closeDelete() {
+      this.dialogDelete = false;
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.wrapper {
-  background: #fff;
-}
-td {
-  padding: 10px 30px;
-}
-table {
-  width: 430px;
-}
-tr {
-  & th {
-    font-size: 20px;
-    border-bottom: 2px solid rgb(193, 200, 201);
-    padding-bottom: 5px;
-    color: darkcyan;
-  }
-}
-.menu {
-  cursor: pointer;
-}
-.menu:hover {
-  color: darkcyan;
-}
-#cont_menu {
-  position: absolute;
-}
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s;
-}
-.fade-enter,
-.fade-leave-to {
-  opacity: 0;
-}
 </style>

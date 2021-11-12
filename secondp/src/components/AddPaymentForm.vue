@@ -1,30 +1,40 @@
 <template>
-  <div class="form">
-    <input placeholder="Payment amount" v-model="value" />
-    <input placeholder="Payment date" v-model="date" />
-    <select-category v-model="category" />
-    <div class="new_category">
-      <input placeholder="New Category" v-model="new_category" />
-      <button class="newcat_btn" @click="addToCategoryList()">
-        add new Category +
-      </button>
-    </div>
-    <button class="save_btn" @click="onSave">ADD +</button>
-  </div>
+  <v-card class="text-left pa-8">
+    <v-text-field label="Payment date" v-model="date"></v-text-field>
+    <v-text-field label="Payment amount" v-model="value"></v-text-field>
+    <v-select
+      :items="getCategoryList"
+      label="Category"
+      v-model="category"
+    ></v-select>
+    <v-text-field label="New Category" v-model="new_category"></v-text-field>
+    <v-btn
+      :disabled="isDisabled"
+      class="newcat_btn"
+      @click="addToCategoryList()"
+    >
+      add new Category <v-icon>mdi-plus</v-icon>
+    </v-btn>
+    <br />
+    <br />
+    <v-btn class="save_btn" @click="onSave()"
+      >ADD <v-icon>mdi-plus</v-icon></v-btn
+    >
+  </v-card>
 </template>
 
 <script>
-import SelectCategory from "./SelectCategory.vue";
 import { mapMutations } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
-  components: { SelectCategory },
   name: "AddPaymentForm",
   props: {
-    contextIdElem: Number,
+    editedElem: Object,
   },
   data() {
     return {
+      isDisabled: false,
       category: "",
       value: "",
       date: "",
@@ -32,6 +42,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(["getCategoryList"]),
     getCurrentDate() {
       const today = new Date();
       const d = today.getDate();
@@ -44,18 +55,22 @@ export default {
     ...mapMutations({
       addCategory: "addNewCategory",
     }),
+    ...mapActions(["fetchCategoryList"]),
     addToCategoryList() {
       this.addCategory(this.new_category);
     },
     onSave() {
-      if (this.contextIdElem) {
+      if (this.editedElem) {
         const data = {
-          id: this.contextIdElem,
+          id: this.editedElem.id,
           category: this.category,
           value: Number(this.value),
         };
         this.$store.dispatch("upgradeData", data);
-        this.$modal.close();
+        this.$emit("closeAddPayment");
+        this.category = "";
+        this.value = "";
+        this.date = "";
       } else {
         const data = {
           id: 0,
@@ -66,8 +81,24 @@ export default {
         this.$emit("addNewPayment", data);
       }
     },
+    changeElem() {
+      if (this.editedElem) {
+        this.isDisabled = true;
+        this.category = this.editedElem.category;
+        this.value = this.editedElem.value;
+      } else {
+        this.isDisabled = false;
+        this.category = "";
+        this.value = "";
+        this.date = "";
+      }
+    },
   },
   mounted() {
+    if (!this.getCategoryList?.length) {
+      this.fetchCategoryList();
+    }
+    this.changeElem();
     if (this.$route.params.category) {
       this.category = this.$route.params.category;
     }
@@ -75,41 +106,13 @@ export default {
       this.value = this.$route.query.value;
     }
   },
+  watch: {
+    editedElem() {
+      this.changeElem();
+    },
+  },
 };
 </script>
 
 <style lang="scss" scoped>
-.form {
-  display: flex;
-  flex-direction: column;
-  width: 300px;
-  margin-bottom: 30px;
-  & input {
-    padding: 10px 0 10px 10px;
-    border: rgb(193, 200, 201) 2px solid;
-    margin-bottom: 10px;
-  }
-  & button {
-    cursor: pointer;
-    margin-left: 180px;
-    width: 120px;
-    padding: 15px 40px;
-    background-color: rgb(7, 145, 145);
-    color: white;
-    border: transparent;
-  }
-  .new_category {
-    display: flex;
-    & button {
-      cursor: pointer;
-      margin-left: 0px;
-      width: 100%;
-      height: 40px;
-      padding: 5px 5px;
-      background-color: rgb(7, 145, 145);
-      color: white;
-      border: transparent;
-    }
-  }
-}
 </style>
