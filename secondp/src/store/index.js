@@ -73,7 +73,7 @@ export default new Vuex.Store({
         {
           id: 6,
           date: "06.3.2020",
-          category: "Transport",
+          category: "Education",
           value: 360,
         },
         {
@@ -91,8 +91,8 @@ export default new Vuex.Store({
         {
           id: 9,
           date: "09.3.2020",
-          category: "Transport",
-          value: 360,
+          category: "Education",
+          value: 500,
         },
         {
           id: 10,

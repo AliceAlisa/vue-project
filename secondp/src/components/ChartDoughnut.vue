@@ -1,6 +1,5 @@
 <template>
   <v-container>
-    <div class="text-h5 text-sm-h3 pb-2">My Chart</div>
     <canvas id="myChart"> </canvas>
   </v-container>
 </template>

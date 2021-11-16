@@ -35,8 +35,6 @@ export default {
   },
   data() {
     return {
-      paymentListLength: 0,
-      show: false,
       dialog: false,
     };
   },
@@ -60,10 +58,6 @@ export default {
       this.addData(item);
       this.dialog = false;
     },
-
-    getLengthPaymentList() {
-      return this.paymentList.length;
-    },
     renderPaymentList(num) {
       this.page = num;
     },
@@ -79,7 +73,6 @@ export default {
     this.$store.dispatch("fetchData");
   },
   mounted() {
-    this.paymentListLength = this.getLengthPaymentList();
     if (this.$route.params.section === "payment") {
       this.show = true;
       if (this.$route.params.category && this.$route.query.value) {
@@ -91,9 +84,6 @@ export default {
         });
       }
     }
-  },
-  updated() {
-    this.paymentListLength = this.getLengthPaymentList();
   },
 };
 </script>

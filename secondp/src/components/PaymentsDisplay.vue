@@ -89,7 +89,6 @@ export default {
         { text: "Value", value: "value" },
         { text: "Actions", value: "actions", sortable: false },
       ],
-      opendMenu: false,
       dialog: false,
       dialogDelete: false,
       editedIndex: -1,
